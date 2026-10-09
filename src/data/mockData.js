@@ -50,24 +50,22 @@ export const initialRequests = [
     role: "Cloud DevOps Engineer",
     tool: "AWS Security Hub",
     duration: "8 Hours (1 Day)",
-    justification:
-      "Investigating cloud firewall alerts on test cluster.",
+    justification: "Investigating cloud firewall alerts on test cluster.",
     risk: "Low",
     status: "Pending",
-    complianceNote:
-      "Safe request: Matches standard role permissions.",
+    requestDate: "10/05/2026",
+    complianceNote: "Safe request: Matches standard role permissions.",
   },
-
   {
     id: "req_102",
     requesterName: "Alex Morgan",
     role: "Financial Analyst",
     tool: "Production Database Admin",
     duration: "30 Days",
-    justification:
-      "Need raw SQL query access to pull custom reports.",
+    justification: "Need raw SQL query access to pull custom reports.",
     risk: "High",
     status: "Pending",
+    requestDate: "10/04/2026",
     complianceNote:
       "Warning: High privilege request outside normal department baseline.",
   },
