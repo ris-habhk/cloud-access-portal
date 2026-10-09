@@ -1,6 +1,21 @@
-import { useMemo, useState } from "react"
 
-function Inbox({ requests, onViewRequest }) {
+import { useMemo, useState } from "react"
+import {
+  Search,
+  ClipboardCheck,
+  CheckCircle2,
+  XCircle,
+  Clock3,
+  RefreshCw,
+  Inbox as InboxIcon,
+  CalendarDays,
+  Eye,
+} from "lucide-react"
+
+import RiskBadge from "../components/RiskBadge.jsx"
+import StatusBadge from "../components/StatusBadge.jsx"
+
+function Inbox({ requests, onViewRequest, onResetDemo }) {
   const [statusFilter, setStatusFilter] = useState("All")
   const [search, setSearch] = useState("")
 
@@ -17,15 +32,16 @@ function Inbox({ requests, onViewRequest }) {
   ).length
 
   const filteredRequests = useMemo(() => {
-    return requests.filter((request) => {
-      const searchText = search.toLowerCase()
+    const searchText = search.trim().toLowerCase()
 
-      const matchesSearch =
-        request.tool.toLowerCase().includes(searchText) ||
-        request.requesterName
-          .toLowerCase()
-          .includes(searchText) ||
-        request.role.toLowerCase().includes(searchText)
+    return requests.filter((request) => {
+      const matchesSearch = [
+        request.tool,
+        request.requesterName,
+        request.role,
+      ].some((value) =>
+        (value || "").toLowerCase().includes(searchText)
+      )
 
       const matchesStatus =
         statusFilter === "All" ||
@@ -40,200 +56,231 @@ function Inbox({ requests, onViewRequest }) {
     setStatusFilter("All")
   }
 
-  const getStatusClasses = (status) => {
-    if (status === "Approved") {
-      return "bg-green-100 text-green-700"
-    }
-
-    if (status === "Rejected") {
-      return "bg-red-100 text-red-700"
-    }
-
-    return "bg-amber-100 text-amber-700"
-  }
-
-  const getRiskClasses = (risk) => {
-    if (risk === "High") {
-      return "bg-red-100 text-red-700"
-    }
-
-    if (risk === "Medium") {
-      return "bg-amber-100 text-amber-700"
-    }
-
-    return "bg-green-100 text-green-700"
-  }
+  const summaryCards = [
+    {
+      label: "Pending",
+      count: pendingCount,
+      description: "Awaiting review",
+      Icon: Clock3,
+      color: "text-amber-600",
+      iconBg: "bg-amber-50",
+    },
+    {
+      label: "Approved",
+      count: approvedCount,
+      description: "Access granted",
+      Icon: CheckCircle2,
+      color: "text-green-600",
+      iconBg: "bg-green-50",
+    },
+    {
+      label: "Rejected",
+      count: rejectedCount,
+      description: "Access denied",
+      Icon: XCircle,
+      color: "text-red-600",
+      iconBg: "bg-red-50",
+    },
+  ]
 
   return (
     <main className="min-h-[calc(100vh-73px)] bg-slate-50">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-blue-800">
+              ACCESS MANAGEMENT
+            </p>
 
-        {/* Page Header */}
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-            Manager Inbox
-          </h1>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+              Manager Inbox
+            </h1>
 
-          <p className="mt-2 text-sm text-slate-600 sm:text-base">
-            Review and manage access requests.
-          </p>
+            <p className="mt-2 text-sm text-slate-600 sm:text-base">
+              Review and manage access requests.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onResetDemo}
+            className="inline-flex items-center justify-center gap-2 self-start rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <RefreshCw size={16} aria-hidden="true" />
+            Reset demo data
+          </button>
         </div>
 
-        {/* Pending Review Banner */}
-        {pendingCount > 0 && (
-          <div className="mt-8 flex flex-col gap-4 rounded-xl border border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-amber-900">
-                Requests awaiting review
-              </p>
+        {pendingCount > 0 ? (
+          <section className="mt-8 flex flex-col gap-4 rounded-xl border border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg bg-amber-100 p-2 text-amber-800">
+                <ClipboardCheck size={20} aria-hidden="true" />
+              </div>
 
-              <p className="mt-1 text-sm text-amber-700">
-                There are {pendingCount} pending{" "}
-                {pendingCount === 1 ? "request" : "requests"}{" "}
-                requiring manager action.
-              </p>
+              <div>
+                <p className="text-sm font-semibold text-amber-900">
+                  Requests awaiting review
+                </p>
+
+                <p className="mt-1 text-sm text-amber-800">
+                  {pendingCount} pending{" "}
+                  {pendingCount === 1 ? "request needs" : "requests need"}{" "}
+                  manager action.
+                </p>
+              </div>
             </div>
 
             <button
               type="button"
               onClick={() => setStatusFilter("Pending")}
-              className="rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-700"
+              className="rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              Review Pending
+              Review pending
             </button>
-          </div>
+          </section>
+        ) : (
+          <section className="mt-8 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-5">
+            <CheckCircle2
+              size={22}
+              className="mt-0.5 shrink-0 text-green-700"
+              aria-hidden="true"
+            />
+
+            <div>
+              <p className="font-semibold text-green-900">
+                All caught up!
+              </p>
+              <p className="mt-1 text-sm text-green-800">
+                There are no pending access requests awaiting review.
+              </p>
+            </div>
+          </section>
         )}
 
-        {/* Summary Cards */}
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <section
+          aria-label="Request summary"
+          className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {summaryCards.map((card) => {
+            const Icon = card.Icon
 
-          {/* Pending */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">
-              Pending
-            </p>
+            return (
+              <article
+                key={card.label}
+                className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              >
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-slate-500">
+                    {card.label}
+                  </p>
 
-            <p className="mt-2 text-3xl font-bold text-amber-600">
-              {pendingCount}
-            </p>
+                  <span className={`rounded-lg p-2 ${card.iconBg} ${card.color}`}>
+                    <Icon size={19} aria-hidden="true" />
+                  </span>
+                </div>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Awaiting review
-            </p>
-          </div>
+                <p className={`mt-3 text-3xl font-bold ${card.color}`}>
+                  {card.count}
+                </p>
 
-          {/* Approved */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">
-              Approved
-            </p>
+                <p className="mt-1 text-sm text-slate-500">
+                  {card.description}
+                </p>
+              </article>
+            )
+          })}
+        </section>
 
-            <p className="mt-2 text-3xl font-bold text-green-600">
-              {approvedCount}
-            </p>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Access granted
-            </p>
-          </div>
-
-          {/* Rejected */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">
-              Rejected
-            </p>
-
-            <p className="mt-2 text-3xl font-bold text-red-600">
-              {rejectedCount}
-            </p>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Access denied
-            </p>
-          </div>
-        </div>
-
-        {/* Search */}
         <div className="mt-8">
           <label
             htmlFor="inbox-search"
-            className="sr-only"
+            className="mb-2 block text-sm font-medium text-slate-700"
           >
-            Search access requests
+            Search requests
           </label>
 
-          <input
-            id="inbox-search"
-            type="text"
-            value={search}
-            onChange={(event) =>
-              setSearch(event.target.value)
-            }
-            placeholder="Search by application, requester, or role..."
-            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-          />
+          <div className="relative">
+            <Search
+              size={18}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+              aria-hidden="true"
+            />
+
+            <input
+              id="inbox-search"
+              type="search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search by application, requester, or role..."
+              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-800 focus:ring-2 focus:ring-blue-100"
+            />
+          </div>
         </div>
 
-        {/* Status Filters */}
         <div className="mt-4 flex flex-wrap gap-2">
-          {["All", "Pending", "Approved", "Rejected"].map(
-            (status) => (
-              <button
-                key={status}
-                type="button"
-                onClick={() => setStatusFilter(status)}
-                className={`rounded-full px-5 py-2 text-sm font-medium transition ${
-                  statusFilter === status
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
-                }`}
-                aria-pressed={statusFilter === status}
-              >
-                {status}
-              </button>
-            )
-          )}
+          {["All", "Pending", "Approved", "Rejected"].map((status) => (
+            <button
+              key={status}
+              type="button"
+              onClick={() => setStatusFilter(status)}
+              aria-pressed={statusFilter === status}
+              className={`rounded-full px-5 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                statusFilter === status
+                  ? "bg-blue-800 text-white shadow-sm"
+                  : "border border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800"
+              }`}
+            >
+              {status}
+              {status === "Pending" && pendingCount > 0 && (
+                <span
+                  className={`ml-2 rounded-full px-1.5 py-0.5 text-xs ${
+                    statusFilter === status
+                      ? "bg-white/20 text-white"
+                      : "bg-amber-100 text-amber-800"
+                  }`}
+                >
+                  {pendingCount}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
 
-        {/* Result Header */}
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-slate-500">
             Showing {filteredRequests.length}{" "}
-            {filteredRequests.length === 1
-              ? "request"
-              : "requests"}
+            {filteredRequests.length === 1 ? "request" : "requests"}
           </p>
 
           {(search || statusFilter !== "All") && (
             <button
               type="button"
               onClick={clearFilters}
-              className="self-start text-sm font-medium text-blue-600 hover:text-blue-700"
+              className="text-sm font-semibold text-blue-800 hover:text-blue-900"
             >
               Clear filters
             </button>
           )}
         </div>
 
-        {/* Request List */}
         {filteredRequests.length > 0 ? (
           <div className="mt-4 space-y-4">
             {filteredRequests.map((request) => (
-              <div
+              <article
                 key={request.id}
-                className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+                className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md sm:p-6"
               >
-                {/* Top */}
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-
-                  <div>
+                  <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <h2 className="text-lg font-semibold text-slate-900">
                         {request.tool}
                       </h2>
 
                       {request.status === "Pending" && (
-                        <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800">
+                          <Clock3 size={13} aria-hidden="true" />
                           Action required
                         </span>
                       )}
@@ -251,112 +298,100 @@ function Inbox({ requests, onViewRequest }) {
                     </p>
                   </div>
 
-                  {/* Badges */}
                   <div className="flex flex-wrap gap-2">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold ${getStatusClasses(
-                        request.status
-                      )}`}
-                    >
-                      {request.status}
-                    </span>
-
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                    <StatusBadge status={request.status} showIcon />
+                    <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
                       {request.duration}
                     </span>
-
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold ${getRiskClasses(
-                        request.risk
-                      )}`}
-                    >
-                      {request.risk} Risk
-                    </span>
+                    <RiskBadge risk={request.risk} showIcon />
                   </div>
                 </div>
 
-                {/* Divider */}
                 <div className="my-5 border-t border-slate-100" />
 
-                {/* Details */}
                 <div className="grid gap-4 md:grid-cols-3">
-
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                      Request Date
+                    <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-slate-400">
+                      <CalendarDays size={14} aria-hidden="true" />
+                      Request date
                     </p>
 
                     <p className="mt-1 text-sm font-medium text-slate-700">
-                      {request.requestDate ||
-                        "Not available"}
+                      {request.requestDate || "Not available"}
                     </p>
                   </div>
 
                   <div className="md:col-span-2">
                     <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                      Business Justification
+                      Business justification
                     </p>
 
-                    <p className="mt-1 text-sm leading-6 text-slate-600">
+                    <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-6 text-slate-600">
                       {request.justification}
                     </p>
                   </div>
                 </div>
 
-                {/* High Risk Warning */}
                 {request.risk === "High" && (
-                  <div className="mt-5 rounded-lg border border-red-200 bg-red-50 p-4">
-                    <p className="text-sm font-semibold text-red-800">
-                      High-risk access request
-                    </p>
+                  <div className="mt-5 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
+                    <XCircle
+                      size={19}
+                      className="mt-0.5 shrink-0 text-red-700"
+                      aria-hidden="true"
+                    />
 
-                    <p className="mt-1 text-sm leading-6 text-red-700">
-                      {request.complianceNote}
-                    </p>
+                    <div>
+                      <p className="text-sm font-semibold text-red-800">
+                        High-risk access request
+                      </p>
+
+                      <p className="mt-1 text-sm leading-6 text-red-700">
+                        {request.complianceNote ||
+                          "Warning: High privilege request requires careful review."}
+                      </p>
+                    </div>
                   </div>
                 )}
 
-                {/* Footer */}
                 <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs text-slate-400">
+                  <p className="break-all text-xs text-slate-400">
                     Request ID: {request.id}
                   </p>
 
                   <button
                     type="button"
                     onClick={() => onViewRequest(request)}
-                    className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                   >
-                    View Details
+                    <Eye size={16} aria-hidden="true" />
+                    View details
                   </button>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         ) : (
-          /* Empty State */
-          <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-xl">
-              📭
+          <section className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-blue-800">
+              <InboxIcon size={25} aria-hidden="true" />
             </div>
 
             <h2 className="mt-4 text-lg font-semibold text-slate-900">
               No requests found
             </h2>
 
-            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
-              No access requests match your current search
-              and filter settings.
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+              No access requests match your current search and filter settings.
             </p>
 
             <button
               type="button"
               onClick={clearFilters}
-              className="mt-5 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+              className="mt-5 rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              Clear Filters
+              Clear filters
             </button>
-          </div>
+          </section>
         )}
       </div>
     </main>

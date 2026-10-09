@@ -1,71 +1,81 @@
+
+export const currentUser = {
+  name: "Rishabh Kumar",
+  role: "Security Engineer",
+  department: "Infrastructure",
+}
+
 export const catalog = [
   {
-    id: "app_1",
+    id: "aws-security-hub",
     name: "AWS Security Hub",
     category: "Cloud",
-    description:
-      "Read-only access to inspect security findings and alerts.",
     risk: "Low",
     recommended: true,
     recommendationReason:
       "85% of your team members use this tool.",
+    description:
+      "Monitor your cloud security posture and identify potential security issues across AWS resources.",
   },
   {
-    id: "app_2",
+    id: "github-enterprise",
     name: "GitHub Enterprise",
     category: "Developer Tools",
-    description:
-      "Write and pull-request permissions on core repositories.",
     risk: "Medium",
     recommended: true,
     recommendationReason:
       "Standard requirement for development tasks.",
+    description:
+      "Collaborate on code, manage repositories, and support secure software development workflows.",
   },
   {
-    id: "app_3",
+    id: "production-database-admin",
     name: "Production Database Admin",
     category: "Cloud",
-    description:
-      "Direct read/write query access to production clusters.",
     risk: "High",
     recommended: false,
-    recommendationReason: null,
+    recommendationReason: "",
+    description:
+      "Manage production database configurations, access controls, and administrative operations.",
   },
   {
-    id: "app_4",
+    id: "financial-erp-ledger",
     name: "Financial ERP Ledger",
     category: "Business Apps",
-    description:
-      "Posting ledger entries and reviewing accounting balances.",
     risk: "High",
     recommended: false,
-    recommendationReason: null,
+    recommendationReason: "",
+    description:
+      "Access enterprise financial records, ledger information, and accounting workflows.",
   },
 ]
 
 export const initialRequests = [
   {
-    id: "req_101",
+    id: "req_1001",
     requesterName: "Priya Sharma",
     role: "Cloud DevOps Engineer",
     tool: "AWS Security Hub",
     duration: "8 Hours (1 Day)",
-    justification: "Investigating cloud firewall alerts on test cluster.",
+    justification:
+      "I need access to review cloud security findings and investigate potential configuration issues.",
     risk: "Low",
     status: "Pending",
-    requestDate: "10/05/2026",
-    complianceNote: "Safe request: Matches standard role permissions.",
+    requestDate: "05 Oct 2026",
+    complianceNote:
+      "Safe request: Matches standard role permissions.",
   },
   {
-    id: "req_102",
+    id: "req_1002",
     requesterName: "Alex Morgan",
     role: "Financial Analyst",
     tool: "Production Database Admin",
     duration: "30 Days",
-    justification: "Need raw SQL query access to pull custom reports.",
+    justification:
+      "I need access to investigate database records required for a financial reconciliation task.",
     risk: "High",
     status: "Pending",
-    requestDate: "10/04/2026",
+    requestDate: "04 Oct 2026",
     complianceNote:
       "Warning: High privilege request outside normal department baseline.",
   },

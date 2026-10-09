@@ -1,3 +1,15 @@
+
+import { useEffect } from "react"
+import { X, Clock, ShieldCheck, Sparkles } from "lucide-react"
+import RiskBadge from "./RiskBadge.jsx"
+
+const durations = [
+  "4 Hours",
+  "8 Hours (1 Day)",
+  "7 Days",
+  "30 Days",
+]
+
 function RequestDrawer({
   app,
   duration,
@@ -7,37 +19,52 @@ function RequestDrawer({
   onClose,
   onSubmit,
 }) {
-  if (!app) return null
+  const characterCount = justification.trim().length
+  const isValid = characterCount >= 20
 
-  const isValid = justification.trim().length >= 20
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") onClose()
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [onClose])
+
+  const handleSubmit = () => {
+    if (!isValid) return
+    onSubmit()
+  }
 
   return (
     <div
-      className="fixed inset-0 z-50 flex justify-end bg-slate-950/40"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="request-access-title"
+      className="fixed inset-0 z-50 flex justify-end bg-slate-950/50"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose()
+      }}
     >
-      {/* Backdrop */}
-      <button
-        type="button"
-        onClick={onClose}
-        className="absolute inset-0 cursor-default"
-        aria-label="Close request access drawer"
-      />
-
-      {/* Drawer */}
-      <div className="relative flex h-full w-full max-w-lg flex-col bg-white shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="request-drawer-title"
+        className="flex h-full w-full max-w-xl flex-col bg-white shadow-2xl sm:max-w-2xl"
+      >
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-5 py-5 sm:px-7">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-wider text-blue-800">
               Access Request
             </p>
 
             <h2
-              id="request-access-title"
-              className="mt-1 text-xl font-semibold text-slate-900"
+              id="request-drawer-title"
+              className="mt-1 break-words text-xl font-semibold text-slate-900 sm:text-2xl"
             >
               Request {app.name}
             </h2>
@@ -46,79 +73,78 @@ function RequestDrawer({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-            aria-label="Close request access"
+            aria-label="Close request drawer"
+            className="shrink-0 rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            ×
+            <X size={21} aria-hidden="true" />
           </button>
-        </div>
+        </header>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-6">
-          {/* App information */}
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 font-semibold text-blue-700">
-                {app.name.charAt(0)}
-              </div>
+        <div className="min-h-0 flex-1 space-y-7 overflow-y-auto px-5 py-6 sm:px-7">
+          <section className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-xl font-bold text-blue-800">
+              {app.name.charAt(0)}
+            </div>
 
-              <div>
-                <h3 className="font-semibold text-slate-900">
-                  {app.name}
-                </h3>
+            <div className="min-w-0">
+              <h3 className="font-semibold text-slate-900">
+                {app.name}
+              </h3>
 
-                <p className="mt-1 text-sm text-slate-600">
-                  {app.description}
-                </p>
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                {app.description}
+              </p>
+
+              <div className="mt-3">
+                <RiskBadge risk={app.risk} showIcon />
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Duration */}
-          <div className="mt-6">
-            <label className="text-sm font-semibold text-slate-900">
-              Access Duration
-            </label>
+          <section>
+            <div className="mb-3 flex items-center gap-2">
+              <Clock size={18} className="text-slate-500" aria-hidden="true" />
 
-            <div className="mt-3 grid grid-cols-2 gap-3">
-              {["4 Hours", "8 Hours (1 Day)", "7 Days", "30 Days"].map(
-                (option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => setDuration(option)}
-                    className={`rounded-lg border px-4 py-3 text-left text-sm font-medium transition ${
-                      duration === option
-                        ? "border-blue-600 bg-blue-50 text-blue-700"
-                        : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
-                    }`}
-                    aria-pressed={duration === option}
-                  >
-                    {option}
-                  </button>
-                )
-              )}
+              <h3 className="font-semibold text-slate-900">
+                Access Duration
+              </h3>
             </div>
-          </div>
 
-          {/* Justification */}
-          <div className="mt-6">
-            <div className="flex items-center justify-between">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {durations.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setDuration(item)}
+                  aria-pressed={duration === item}
+                  className={`rounded-xl border px-4 py-3 text-left text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                    duration === item
+                      ? "border-blue-800 bg-blue-50 text-blue-800 ring-1 ring-blue-800"
+                      : "border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-slate-50"
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <label
                 htmlFor="business-justification"
-                className="text-sm font-semibold text-slate-900"
+                className="font-semibold text-slate-900"
               >
                 Business Justification
               </label>
 
               <span
+                aria-live="polite"
                 className={`text-xs ${
-                  justification.trim().length >= 20
-                    ? "text-green-600"
-                    : "text-slate-500"
+                  isValid ? "text-green-700" : "text-slate-500"
                 }`}
               >
-                {justification.length}/20 minimum
+                {characterCount}/20 minimum
               </span>
             </div>
 
@@ -127,52 +153,73 @@ function RequestDrawer({
               value={justification}
               onChange={(event) => setJustification(event.target.value)}
               placeholder="Explain why you need access to this application..."
-              rows={6}
-              className="mt-3 w-full resize-none rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              rows={5}
+              aria-describedby="justification-help"
+              className="w-full resize-y rounded-xl border border-slate-300 px-4 py-3 text-sm leading-6 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-700 focus:ring-2 focus:ring-blue-100"
             />
 
-            {justification.length > 0 &&
-              justification.trim().length < 20 && (
-                <p className="mt-2 text-xs text-amber-600">
-                  Please provide at least 20 characters.
+            <p
+              id="justification-help"
+              className={`mt-2 text-xs ${
+                isValid ? "text-green-700" : "text-slate-500"
+              }`}
+            >
+              {isValid
+                ? "Your justification meets the minimum length."
+                : "Enter at least 20 non-space characters."}
+            </p>
+          </section>
+
+          <section className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+            <div className="flex items-center gap-2">
+              <ShieldCheck size={19} className="text-blue-800" aria-hidden="true" />
+
+              <h3 className="font-semibold text-blue-900">
+                What happens next?
+              </h3>
+            </div>
+
+            <p className="mt-2 text-sm leading-6 text-blue-800">
+              Your request will be added to the Manager Inbox for review.
+              Access is not granted until the request is approved.
+            </p>
+          </section>
+
+          {app.recommended && (
+            <section>
+              <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-800">
+                <Sparkles size={14} aria-hidden="true" />
+                Recommended for your team
+              </span>
+
+              {app.recommendationReason && (
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {app.recommendationReason}
                 </p>
               )}
-          </div>
-
-          {/* Request information */}
-          <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 p-4">
-            <p className="text-sm font-semibold text-blue-900">
-              What happens next?
-            </p>
-
-            <p className="mt-1 text-sm leading-6 text-blue-700">
-              Your request will be sent to the Manager Inbox for review.
-            </p>
-          </div>
+            </section>
+          )}
         </div>
 
-        {/* Footer */}
-        <div className="border-t border-slate-200 bg-white px-6 py-4">
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-lg border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-            >
-              Cancel
-            </button>
+        <footer className="flex shrink-0 gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:px-7">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Cancel
+          </button>
 
-            <button
-              type="button"
-              onClick={onSubmit}
-              disabled={!isValid}
-              className="flex-1 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-            >
-              Submit Request
-            </button>
-          </div>
-        </div>
-      </div>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!isValid}
+            className="flex-1 rounded-xl bg-blue-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300"
+          >
+            Submit Request
+          </button>
+        </footer>
+      </section>
     </div>
   )
 }
