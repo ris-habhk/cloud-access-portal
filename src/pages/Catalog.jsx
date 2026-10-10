@@ -2,6 +2,8 @@
 import { useState } from "react"
 import AppCard from "../components/AppCard.jsx"
 import RequestDrawer from "../components/RequestDrawer.jsx"
+import SearchInput from "../components/SearchInput.jsx"
+import FilterPills from "../components/FilterPills.jsx"
 import { catalog, currentUser } from "../data/mockData.js"
 
 function Catalog({ onRequestSubmitted }) {
@@ -21,7 +23,7 @@ function Catalog({ onRequestSubmitted }) {
   const filteredApps = catalog.filter((app) => {
     const matchesSearch = app.name
       .toLowerCase()
-      .includes(search.toLowerCase())
+      .includes(search.trim().toLowerCase())
 
     const matchesCategory =
       category === "All" || app.category === category
@@ -88,39 +90,21 @@ function Catalog({ onRequestSubmitted }) {
         </p>
       </div>
 
-      <div className="mb-5">
-        <label
-          htmlFor="catalog-search"
-          className="mb-2 block text-sm font-medium text-slate-700"
-        >
-          Search applications
-        </label>
-
-        <input
+      <div className="mb-5 sm:max-w-md">
+        <SearchInput
           id="catalog-search"
-          type="search"
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={setSearch}
           placeholder="Search by application name..."
-          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-700 focus:ring-2 focus:ring-blue-100 sm:max-w-md"
         />
       </div>
 
-      <div className="mb-8 flex flex-wrap gap-2">
-        {categories.map((item) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => setCategory(item)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-              category === item
-                ? "bg-blue-800 text-white"
-                : "border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-800"
-            }`}
-          >
-            {item}
-          </button>
-        ))}
+      <div className="mb-8">
+        <FilterPills
+          options={categories}
+          selected={category}
+          onSelect={setCategory}
+        />
       </div>
 
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">

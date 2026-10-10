@@ -11,12 +11,14 @@ A responsive access-management dashboard built with React. Users can browse appl
 ## Features
 
 ### Application Catalog
+
 - Browse applications across Cloud, Developer Tools, and Business Apps.
 - Search applications by name and filter by category.
 - View risk levels and recommended applications.
 - Submit access requests with a selected duration and business justification.
 
 ### Access Request Workflow
+
 - Choose from 4 Hours, 8 Hours (1 Day), 7 Days, or 30 Days.
 - Require a minimum of 20 characters in the business justification.
 - Display a live character counter and validation feedback.
@@ -24,6 +26,7 @@ A responsive access-management dashboard built with React. Users can browse appl
 - Show success and error notifications.
 
 ### Manager Inbox
+
 - View request totals for Pending, Approved, and Rejected.
 - Search requests and filter them by status.
 - Review requester details, application, duration, and justification.
@@ -33,6 +36,7 @@ A responsive access-management dashboard built with React. Users can browse appl
 - Reset the demo data to the original sample requests.
 
 ### Persistence
+
 - Store request changes in browser Local Storage.
 - Preserve requests after refreshing the page.
 - Restore the initial sample requests using Reset demo data.
@@ -50,6 +54,7 @@ A responsive access-management dashboard built with React. Users can browse appl
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js
 - npm
 
@@ -84,7 +89,7 @@ Create a production build:
 npm run build
 ```
 
-Run the linter:
+Run the linter, if the `lint` script is configured in `package.json`:
 
 ```bash
 npm run lint
@@ -98,10 +103,13 @@ cloud-access-portal/
 ├── src/
 │   ├── components/
 │   │   ├── AppCard.jsx
+│   │   ├── FilterPills.jsx
 │   │   ├── Navbar.jsx
+│   │   ├── RequestCard.jsx
 │   │   ├── RequestDetailsDrawer.jsx
 │   │   ├── RequestDrawer.jsx
 │   │   ├── RiskBadge.jsx
+│   │   ├── SearchInput.jsx
 │   │   ├── StatusBadge.jsx
 │   │   └── Toast.jsx
 │   ├── data/
@@ -118,18 +126,12 @@ cloud-access-portal/
 └── vite.config.js
 ```
 
-
-
-## Demo Notes
-
-This project uses sample data and browser Local Storage to demonstrate an access-request workflow. Risk and compliance messages are illustrative and are not a real security assessment or authorization decision. It does not grant actual permissions to external applications.
-
 ## Repository
 
 [GitHub: Cloud Access Portal](https://github.com/ris-habhk/cloud-access-portal)
 
 ## Author
 
-Rishabh Kumar
+**Rishabh Kumar**
 
 [LinkedIn](https://www.linkedin.com/in/rishabh-kumar-48031328a)
