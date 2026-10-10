@@ -1,7 +1,12 @@
-
 # Cloud Access Portal
 
 A responsive access-management dashboard built with React. Users can browse applications, submit access requests, and review approval decisions through a manager inbox.
+
+## Live Demo
+
+- **Live Website:** [Cloud Access Portal](https://cloud-access-portal.vercel.app/catalog)
+- **Manager Inbox:** [View Manager Inbox](https://cloud-access-portal.vercel.app/inbox)
+- **GitHub Repository:** [View Source Code](https://github.com/ris-habhk/cloud-access-portal)
 
 ## Features
 
