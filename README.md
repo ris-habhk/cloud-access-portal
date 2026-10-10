@@ -118,7 +118,7 @@ cloud-access-portal/
 └── vite.config.js
 ```
 
-*This tree describes the intended project structure. Keep only entries that actually exist in your repository.*
+
 
 ## Demo Notes
 
