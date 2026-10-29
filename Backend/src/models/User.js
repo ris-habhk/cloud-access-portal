@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -31,6 +30,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["requester", "manager", "admin"],
       default: "requester"
+    },
+
+    isEmailVerified: {
+      type: Boolean,
+      default: false
     }
   },
   {
