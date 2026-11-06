@@ -1,6 +1,6 @@
 
 const express = require("express");
-const Application = require("../models/Application");
+const Application = require("../models/Application.js");
 const mongoose = require("mongoose");
 const router = express.Router();
 
@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/", async (req, res, next) => {
   try {
     const applications = await Application.find({ isActive: true })
-      .select("name description category isActive")
+      .select("name description category risk isActive")
       .sort({ name: 1 })
       .lean();
 
@@ -38,7 +38,7 @@ router.get("/:id", async (req, res, next) => {
     const application = await Application.findOne({
       _id: id,
       isActive: true
-    }).select("name description category isActive");
+    }).select("name description category risk isActive");
 
     if (!application) {
       return res.status(404).json({

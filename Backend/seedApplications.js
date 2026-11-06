@@ -8,22 +8,26 @@ const applications = [
   {
     name: "AWS Console",
     description: "Manage cloud infrastructure and services",
-    category: "Cloud"
+    category: "Cloud",
+    risk: "High"
   },
   {
     name: "GitHub",
     description: "Manage repositories and collaborate on code",
-    category: "Development"
+    category: "Development",
+    risk: "Medium"
   },
   {
     name: "Jira",
     description: "Manage tasks, projects, and workflows",
-    category: "Productivity"
+    category: "Productivity",
+    risk: "Low"
   },
   {
     name: "Grafana",
     description: "Monitor systems and visualize metrics",
-    category: "Monitoring"
+    category: "Monitoring",
+    risk: "Medium"
   }
 ];
 
@@ -35,7 +39,7 @@ async function seedApplications() {
     for (const application of applications) {
       await Application.updateOne(
         { name: application.name },
-        { $setOnInsert: application },
+        { $setOnInsert: application, $set: { risk: application.risk } },
         { upsert: true, runValidators: true }
       );
     }

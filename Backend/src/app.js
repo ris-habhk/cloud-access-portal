@@ -7,6 +7,7 @@ const errorHandler = require("./middleware/errorHandler.js");
 const healthRoutes = require("./routes/healthRoutes.js");
 const applicationRoutes = require("./routes/applicationRoutes.js");
 const authRoutes = require("./routes/authRoutes.js");
+const accessRequestRoutes = require("./routes/accessRequestRoutes.js");
 const app = express();
 
 // Read JSON data sent in HTTP requests
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use("/api/test-health", healthRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/access-requests", accessRequestRoutes);
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,

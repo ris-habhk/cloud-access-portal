@@ -2,22 +2,22 @@
 const express = require("express");
 const { rateLimit } = require("express-rate-limit");
 
-const User = require("../models/User");
-const RefreshSession = require("../models/RefreshSession");
-const { hashPassword, verifyPassword } = require("../utils/password");
-const { signAccessToken } = require("../utils/token");
+const User = require("../models/User.js");
+const RefreshSession = require("../models/RefreshSession.js");
+const { hashPassword, verifyPassword } = require("../utils/password.js");
+const { signAccessToken } = require("../utils/token.js");
 const {
   generateRefreshToken,
   hashRefreshToken,
-} = require("../utils/refreshToken");
+} = require("../utils/refreshToken.js");
 const {
   REFRESH_COOKIE_NAME,
   REFRESH_TOKEN_TTL_MS,
   getRefreshCookieOptions,
   clearRefreshCookie,
-} = require("../utils/refreshCookie");
-const { issueOTP, resendOTP, verifyOTP } = require("../services/otpService");
-const authenticate = require("../middleware/authenticate");
+} = require("../utils/refreshCookie.js");
+const { issueOTP, resendOTP, verifyOTP } = require("../services/otpService.js");
+const authenticate = require("../middleware/authenticate.js");
 
 const router = express.Router();
 

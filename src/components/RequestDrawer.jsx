@@ -8,6 +8,7 @@ const durations = [
   "8 Hours (1 Day)",
   "7 Days",
   "30 Days",
+  // "356 Days",
 ]
 
 function RequestDrawer({
@@ -18,6 +19,7 @@ function RequestDrawer({
   setJustification,
   onClose,
   onSubmit,
+  submitting = false,
 }) {
   const characterCount = justification.trim().length
   const isValid = characterCount >= 20
@@ -141,7 +143,7 @@ function RequestDrawer({
               <span
                 aria-live="polite"
                 className={`text-xs ${
-                  isValid ? "text-green-700" : "text-slate-500"
+                  isValid ? "text-green-700" : "text-red-500"
                 }`}
               >
                 {characterCount}/20 minimum
@@ -213,10 +215,10 @@ function RequestDrawer({
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!isValid}
+            disabled={!isValid || submitting}
             className="flex-1 rounded-xl bg-blue-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300"
           >
-            Submit Request
+            {submitting ? "Submitting..." : "Submit Request"}
           </button>
         </footer>
       </section>

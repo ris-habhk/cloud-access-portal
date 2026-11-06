@@ -18,6 +18,7 @@ function RequestDetailsDrawer({
   onClose,
   onApprove,
   onReject,
+  saving = false,
 }) {
   const isOpen = Boolean(request)
 
@@ -31,7 +32,7 @@ function RequestDetailsDrawer({
       if (event.key === "Escape") onClose()
     }
 
-    window.addEventListener("keydown", handleKeyDown)
+   window.addEventListener("keydown", handleKeyDown)
 
     return () => {
       document.body.style.overflow = previousOverflow
@@ -286,18 +287,19 @@ function RequestDetailsDrawer({
               <button
                 type="button"
                 onClick={onReject}
-                disabled={rejectionReason.trim().length < 10}
+                disabled={rejectionReason.trim().length < 10 || saving}
                 className="flex-1 rounded-xl border border-red-200 px-3 py-3 text-sm font-semibold text-red-700 transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Reject Request
+                {saving ? "Saving..." : "Reject Request"}
               </button>
 
               <button
                 type="button"
                 onClick={onApprove}
+                disabled={saving}
                 className="flex-1 rounded-xl bg-green-600 px-3 py-3 text-sm font-semibold text-white transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
               >
-                Approve Request
+                {saving ? "Saving..." : "Approve Request"}
               </button>
             </div>
           ) : (

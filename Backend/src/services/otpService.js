@@ -1,8 +1,8 @@
 
 const crypto = require("crypto");
 
-const EmailOTP = require("../models/EmailOTP");
-const { sendOTPEmail } = require("../utils/email");
+const EmailOTP = require("../models/EmailOTP.js");
+const { sendOTPEmail } = require("../utils/email.js");
 const {
   generateOTP,
   hashOTP,

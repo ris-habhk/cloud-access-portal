@@ -48,6 +48,17 @@ export const catalog = [
     description:
       "Access enterprise financial records, ledger information, and accounting workflows.",
   },
+
+  // {
+  //   id: "production DB",
+  //   name: "Production MG",
+  //   category: "blue lock",
+  //   risk: "Low",
+  //   recommended: true,
+  //   recommendationReason: "null",
+  //   description:
+  //     "nulll.",
+  // },
 ]
 
 export const initialRequests = [
@@ -79,4 +90,19 @@ export const initialRequests = [
     complianceNote:
       "Warning: High privilege request outside normal department baseline.",
   },
+
+  // {
+  //   id: "req_1003",
+  //   requesterName: "lex Morgan",
+  //   role: "Financial Analyst",
+  //   tool: "Production Database Admin",
+  //   duration: "30 Days",
+  //   justification:
+  //     "I need access to investigate database records required for a financial reconciliation task.",
+  //   risk: "High",
+  //   status: "Pending",
+  //   requestDate: "09 Oct 2026",
+  //   complianceNote:
+  //     "Warning: High privilege request outside normal department baseline.",
+  // },
 ]

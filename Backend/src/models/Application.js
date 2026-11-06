@@ -22,6 +22,12 @@ const applicationSchema = new mongoose.Schema({
     trim: true
   },
 
+  risk: {
+    type: String,
+    enum: ["Low", "Medium", "High"],
+    default: "Medium"
+  },
+
   isActive: {
     type: Boolean,
     default: true
